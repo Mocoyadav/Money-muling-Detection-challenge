@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Money Muling Detection</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"
+    />
+    <link rel="stylesheet" href="/static/styles.css" />
+    <script src="https://unpkg.com/cytoscape@3.28.1/dist/cytoscape.min.js"></script>
+  </head>
+  <body>
+    <section class="section">
+      <div class="container">
+        <h1 class="title">Money Muling Detection</h1>
+        <p class="subtitle">
+          Upload a transaction CSV to detect fraud rings, smurfing, and shell
+          chains.
+        </p>
+
+        <div class="box">
+          <form id="upload-form">
+            <div class="field">
+              <label class="label">CSV File</label>
+              <div class="control">
+                <input
+                  class="input"
+                  type="file"
+                  id="file-input"
+                  accept=".csv"
+                  required
+                />
+              </div>
+              <p class="help">
+                Required columns:
+                <code>transaction_id, sender_id, receiver_id, amount, timestamp</code>
+              </p>
+            </div>
+
+            <div class="field is-grouped">
+              <div class="control">
+                <button class="button is-link" type="submit">
+                  Analyze
+                </button>
+              </div>
+              <div class="control">
+                <button
+                  class="button is-light"
+                  type="button"
+                  id="download-json-btn"
+                  disabled
+                >
+                  Download JSON
+                </button>
+              </div>
+            </div>
+          </form>
+
+          <progress
+            id="progress-bar"
+            class="progress is-small is-primary"
+            max="100"
+            style="display: none"
+          >
+            Loading
+          </progress>
+
+          <p id="error-message" class="has-text-danger"></p>
+        </div>
+
+        <div class="columns">
+          <div class="column is-two-thirds">
+            <h2 class="title is-5">Graph View</h2>
+            <div id="graph-container"></div>
+            <p class="help">
+              Node color = risk (green → red). Click nodes to see details.
+            </p>
+          </div>
+          <div class="column">
+            <h2 class="title is-5">Fraud Ring Summary</h2>
+            <div class="table-container">
+              <table class="table is-fullwidth is-striped is-hoverable">
+                <thead>
+                  <tr>
+                    <th>Ring ID</th>
+                    <th>Pattern</th>
+                    <th>Risk</th>
+                    <th>Members</th>
+                  </tr>
+                </thead>
+                <tbody id="rings-table-body"></tbody>
+              </table>
+            </div>
+
+            <h2 class="title is-5" style="margin-top: 1.5rem">
+              Top Risky Accounts
+            </h2>
+            <div class="table-container">
+              <table class="table is-fullwidth is-striped is-hoverable">
+                <thead>
+                  <tr>
+                    <th>Account</th>
+                    <th>Risk</th>
+                    <th>Reasons</th>
+                  </tr>
+                </thead>
+                <tbody id="accounts-table-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>
+
